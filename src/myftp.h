@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <arpa/inet.h>
 #include <netinet/in.h>
 
 #define PORT 6969
@@ -19,8 +20,13 @@ enum {
     RET_ERROR = 84,
 };
 
-static const struct timeval TV_CONNECT = {.tv_sec = 0, .tv_usec = 100};
-static const struct timeval TV_READ = {.tv_sec = 0, .tv_usec = 100};
+typedef enum {
+    UNDEFINED,
+    ST_JUST_CONNECTED,
+} state_t;
+
+static const struct timeval TV_CONNECT = {.tv_sec = 1, .tv_usec = 0};
+static const struct timeval TV_READ = {.tv_sec = 1, .tv_usec = 0};
 
 typedef struct {
     int fd;
@@ -29,6 +35,7 @@ typedef struct {
 
 typedef struct {
     socket_t socket;
+    state_t state;
 } client_t;
 
 typedef struct {
@@ -41,3 +48,7 @@ typedef struct {
 } server_t;
 
 int myftp(int argc, char **argv);
+client_t *new_client(server_t *serv, client_t *client);
+void handle_clients(server_t *serv);
+void client_handle(client_t *client);
+int client_write(client_t *client, const char *fmt, ...);
