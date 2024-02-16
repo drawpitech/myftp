@@ -36,7 +36,6 @@ static int open_serv(server_t *serv)
         return ret_error("socket", RET_ERROR);
     serv->socket.sock_in.sin_family = AF_INET;
     serv->socket.sock_in.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv->socket.sock_in.sin_port = htons(PORT);
     if (bind(
             serv->socket.fd, (struct sockaddr *)&serv->socket.sock_in,
             sizeof(serv->socket.sock_in)) == -1) {
@@ -70,6 +69,7 @@ int myftp(int argc, char **argv)
 {
     server_t serv = {0};
 
+    args_get(argv, argc, &serv);
     serv.socket.fd = socket(AF_INET, SOCK_STREAM, 0);
     if (open_serv(&serv) == RET_ERROR)
         return RET_ERROR;

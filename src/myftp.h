@@ -25,8 +25,8 @@ typedef enum {
     ST_JUST_CONNECTED,
 } state_t;
 
-static const struct timeval TV_CONNECT = {.tv_sec = 1, .tv_usec = 0};
-static const struct timeval TV_READ = {.tv_sec = 1, .tv_usec = 0};
+static const struct timeval TV_CONNECT = {.tv_sec = 0, .tv_usec = 1000};
+static const struct timeval TV_READ = {.tv_sec = 0, .tv_usec = 1000};
 
 typedef struct {
     int fd;
@@ -45,6 +45,7 @@ typedef struct {
         size_t alloc;
     } clients;
     socket_t socket;
+    const char *path;
 } server_t;
 
 int myftp(int argc, char **argv);
@@ -52,3 +53,4 @@ client_t *new_client(server_t *serv, client_t *client);
 void handle_clients(server_t *serv);
 void client_handle(client_t *client);
 int client_write(client_t *client, const char *fmt, ...);
+void args_get(char **argv, int argc, server_t *serv);

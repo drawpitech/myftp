@@ -46,7 +46,7 @@ static void client_command(client_t *client, char *buffer)
 {
     if (client == NULL || buffer == NULL)
         return;
-    printf("client said: \"%s\"\n", buffer);
+    printf("client said: %s", buffer);
     dprintf(client->socket.fd, "you said %s", buffer);
 }
 
