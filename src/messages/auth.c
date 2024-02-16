@@ -43,7 +43,7 @@ void msg_pass(client_t *client, const char *buffer)
     if (client == NULL || buffer == NULL)
         return;
     if (client->username[0] == '\0') {
-        client_write(client, MSG_332);
+        client_write(client, MSG_503);
         return;
     }
     for (int i = 0; USERS[i].username != NULL; i++) {

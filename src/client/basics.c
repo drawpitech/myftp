@@ -46,15 +46,18 @@ static bool client_wrote(client_t *client)
 
 int client_write(client_t *client, const char *fmt, ...)
 {
-    va_list args;
+    va_list args1;
+    va_list args2;
     int ret = 0;
 
     if (client == NULL || fmt == NULL)
         return 0;
-    va_start(args, fmt);
-    ret = vdprintf(client->socket.fd, fmt, args);
-    DEBUG_DO(vprintf(fmt, args));
-    va_end(args);
+    va_start(args1, fmt);
+    va_copy(args2, args1);
+    ret = vdprintf(client->socket.fd, fmt, args1);
+    DEBUG_DO(vprintf(fmt, args2));
+    va_end(args1);
+    va_end(args2);
     return ret;
 }
 
