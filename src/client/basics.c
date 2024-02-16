@@ -13,6 +13,7 @@
 
 #include "client.h"
 #include "../messages/messages.h"
+#include "debug.h"
 #include "myftp.h"
 
 void client_disconnect(client_t *client)
@@ -21,7 +22,7 @@ void client_disconnect(client_t *client)
         return;
     close(client->socket.fd);
     client->socket.fd = -1;
-    printf(
+    DEBUG(
         "client disconnected: %s:%u\n", GETIP(*client),
         client->socket.sock_in.sin_port);
 }
@@ -52,8 +53,7 @@ int client_write(client_t *client, const char *fmt, ...)
         return 0;
     va_start(args, fmt);
     ret = vdprintf(client->socket.fd, fmt, args);
-    printf("server: ");
-    vprintf(fmt, args);
+    DEBUG_DO(vprintf(fmt, args));
     va_end(args);
     return ret;
 }

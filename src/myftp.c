@@ -19,6 +19,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "debug.h"
 
 static int ret_error(const char *name, int value)
 {
@@ -73,13 +74,13 @@ int myftp(int argc, char **argv)
     serv.socket.fd = socket(AF_INET, SOCK_STREAM, 0);
     if (open_serv(&serv) == RET_ERROR)
         return RET_ERROR;
-    printf("server online..\n");
+    DEBUG("server online.., fd: %d", serv.socket.fd);
     for (client_t client; true;) {
         handle_clients(&serv);
         if (new_client(&serv, &client) == NULL)
             continue;
         add_client(&serv, &client);
-        printf("new: %s:%u\n", GETIP(client), client.socket.sock_in.sin_port);
+        DEBUG("new: %s:%u", GETIP(client), client.socket.sock_in.sin_port);
     }
     close(serv.socket.fd);
     return RET_VALID;
