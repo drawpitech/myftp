@@ -23,14 +23,6 @@ enum {
     RET_ERROR = 84,
 };
 
-typedef enum {
-    ST_NIL,
-    ST_JUST_CONNECTED,
-    ST_WAITING_USERNAME,
-    ST_WAITING_PASSWORD,
-    ST_LOGGED_IN,
-} state_t;
-
 static const struct timeval TV_CONNECT = {.tv_sec = 0, .tv_usec = 1000};
 static const struct timeval TV_READ = {.tv_sec = 0, .tv_usec = 1000};
 
