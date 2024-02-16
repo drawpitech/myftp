@@ -11,6 +11,7 @@
 
 #include "debug.h"
 #include "messages.h"
+#include "messages/codes.h"
 
 static char *clear_msg(const struct msg_s *msg, char *buffer)
 {
@@ -34,12 +35,15 @@ void client_process_message(client_t *client, char *buffer)
     if (client == NULL || buffer == NULL)
         return;
     DEBUG("client said: %s", buffer);
-    for (size_t i = 0; INCOMMING_MSG[i].func != NULL; i++) {
+    for (size_t i = 0; INCOMMING_MSG[i].cmd != NULL; i++) {
         msg = &INCOMMING_MSG[i];
         if (strncmp(buffer, msg->cmd, strlen(msg->cmd)) != 0)
             continue;
-        msg->func(client, clear_msg(msg, buffer));
+        if (msg->func != NULL)
+            msg->func(client, clear_msg(msg, buffer));
+        else
+            client_write(client, MSG_502);
         return;
     }
-    client_write(client, "500 Syntax error, command unrecognized.\r\n");
+    client_write(client, MSG_500);
 }
