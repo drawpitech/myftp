@@ -43,22 +43,6 @@ static bool client_wrote(client_t *client)
     return FD_ISSET(client->socket.fd, &fdread);
 }
 
-static void client_get_command(client_t *client)
-{
-    static char buffer[BUFSIZ + 1];
-    ssize_t size = 0;
-
-    if (client == NULL || !client_wrote(client))
-        return;
-    size = read(client->socket.fd, buffer, BUFSIZ);
-    if (size == 0 || size == -1) {
-        client_disconnect(client);
-        return;
-    }
-    buffer[size] = 0;
-    client_process_message(client, buffer);
-}
-
 int client_write(client_t *client, const char *fmt, ...)
 {
     va_list args;
@@ -76,15 +60,16 @@ int client_write(client_t *client, const char *fmt, ...)
 
 void client_handle(client_t *client)
 {
-    if (client == NULL)
+    static char buffer[BUFSIZ + 1];
+    ssize_t size = 0;
+
+    if (client == NULL || !client_wrote(client))
         return;
-    switch (client->state) {
-        case ST_JUST_CONNECTED:
-            client_write(client, "220 Service ready for new user.\r\n");
-            client->state = ST_WAITING_USERNAME;
-            break;
-        default:
-            client_get_command(client);
-            break;
+    size = read(client->socket.fd, buffer, BUFSIZ);
+    if (size == 0 || size == -1) {
+        client_disconnect(client);
+        return;
     }
+    buffer[size] = 0;
+    client_process_message(client, buffer);
 }

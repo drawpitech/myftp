@@ -12,6 +12,7 @@
 #include <unistd.h>
 
 #include "client/client.h"
+#include "messages/codes.h"
 #include "myftp.h"
 
 void handle_clients(server_t *serv)
@@ -39,8 +40,10 @@ static client_t *init_client(server_t *serv, client_t *client)
     memset(client, 0, sizeof(*client));
     client->socket.fd = accept(
         serv->socket.fd, (struct sockaddr *)&client->socket.sock_in, &len);
-    client->state = ST_JUST_CONNECTED;
-    return (client->socket.fd == -1) ? NULL : client;
+    if (client->socket.fd == -1)
+        return NULL;
+    client_write(client, MSG_220);
+    return client;
 }
 
 client_t *new_client(server_t *serv, client_t *client)

@@ -41,7 +41,6 @@ typedef struct {
 
 typedef struct {
     socket_t socket;
-    state_t state;
     char username[BUFSIZ];
 } client_t;
 
