@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** myftp
 ** File description:
-** handle
+** basics
 */
 
 #include <stdarg.h>

@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** myftp
 ** File description:
-** message
+** misc
 */
 
 #include "client/client.h"
