@@ -10,3 +10,4 @@
 #include "myftp.h"
 
 void client_disconnect(client_t *client);
+void client_handle(client_t *client);

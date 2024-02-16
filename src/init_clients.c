@@ -11,6 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "client/client.h"
 #include "myftp.h"
 
 void handle_clients(server_t *serv)

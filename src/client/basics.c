@@ -12,6 +12,7 @@
 #include <unistd.h>
 
 #include "client.h"
+#include "../messages/messages.h"
 #include "myftp.h"
 
 void client_disconnect(client_t *client)
@@ -42,14 +43,6 @@ static bool client_wrote(client_t *client)
     return FD_ISSET(client->socket.fd, &fdread);
 }
 
-static void client_command(client_t *client, char *buffer)
-{
-    if (client == NULL || buffer == NULL)
-        return;
-    printf("client said: %s", buffer);
-    dprintf(client->socket.fd, "you said %s", buffer);
-}
-
 static void client_get_command(client_t *client)
 {
     static char buffer[BUFSIZ + 1];
@@ -63,7 +56,7 @@ static void client_get_command(client_t *client)
         return;
     }
     buffer[size] = 0;
-    client_command(client, buffer);
+    client_process_message(client, buffer);
 }
 
 int client_write(client_t *client, const char *fmt, ...)
@@ -75,6 +68,8 @@ int client_write(client_t *client, const char *fmt, ...)
         return 0;
     va_start(args, fmt);
     ret = vdprintf(client->socket.fd, fmt, args);
+    printf("server: ");
+    vprintf(fmt, args);
     va_end(args);
     return ret;
 }
@@ -86,7 +81,7 @@ void client_handle(client_t *client)
     switch (client->state) {
         case ST_JUST_CONNECTED:
             client_write(client, "220 Service ready for new user.\r\n");
-            client->state = UNDEFINED;
+            client->state = ST_WAITING_USERNAME;
             break;
         default:
             client_get_command(client);
