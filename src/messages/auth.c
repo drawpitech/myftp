@@ -11,8 +11,7 @@
 #include "messages.h"
 
 // Great security here
-static const struct
-{
+static const struct {
     char *username;
     char *password;
 } USERS[] = {
