@@ -32,6 +32,7 @@ void msg_user(client_t *client, const char *buffer)
             client_write(client, MSG_331);
             return;
         }
+        client->logged = true;
         client_write(client, MSG_230);
         return;
     }
