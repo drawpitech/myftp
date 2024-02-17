@@ -20,6 +20,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "client/client.h"
 #include "debug.h"
 
 int ret_error(const char *name, int value)
@@ -73,6 +74,17 @@ static server_t *add_client(server_t *serv, client_t *client)
     return serv;
 }
 
+static void close_server(server_t *serv)
+{
+    if (serv == NULL)
+        return;
+    for (size_t i = 0; i < serv->clients.size; i++)
+        if (serv->socket.fd != -1)
+            client_disconnect(&serv->clients.arr[i]);
+    close(serv->socket.fd);
+    free(serv->clients.arr);
+}
+
 int myftp(int argc, char **argv)
 {
     server_t serv = {0};
@@ -89,6 +101,6 @@ int myftp(int argc, char **argv)
         add_client(&serv, &client);
         DEBUG("new: %s:%u", GETIP(client), client.socket.sock_in.sin_port);
     }
-    close(serv.socket.fd);
+    close_server(&serv);
     return RET_VALID;
 }
