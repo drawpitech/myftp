@@ -47,6 +47,7 @@ typedef struct {
 } server_t;
 
 int myftp(int argc, char **argv);
+int ret_error(const char *name, int value);
 client_t *new_client(server_t *serv, client_t *client);
 void handle_clients(server_t *serv);
 int client_write(client_t *client, const char *fmt, ...);

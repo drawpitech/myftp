@@ -21,7 +21,7 @@
 #include <unistd.h>
 #include "debug.h"
 
-static int ret_error(const char *name, int value)
+int ret_error(const char *name, int value)
 {
     dprintf(STDERR_FILENO, "myftp: ");
     perror(name);

@@ -23,13 +23,9 @@ static const struct msg_s {
     char *cmd;
     void (*func)(client_t *client, const char *buffer);
 } INCOMMING_MSG[] = {
+    {"ACCT", NULL},
     {"USER", msg_user},
     {"PASS", msg_pass},
-    {"ACCT", NULL},
-    {"CWD", NULL},
-    {"USER", NULL},
-    {"PASS", NULL},
-    {"ACCT", NULL},
     {"CWD ", NULL},
     {"CDUP", NULL},
     {"SMNT", NULL},
