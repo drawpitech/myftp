@@ -14,6 +14,7 @@
 
 #include "client.h"
 #include "debug.h"
+#include "messages/codes.h"
 #include "messages/messages.h"
 #include "myftp.h"
 
@@ -27,6 +28,22 @@ void client_disconnect(client_t *client)
         client->socket.sock_in.sin_port);
     memset(client, 0, sizeof(*client));
     client->socket.fd = -1;
+}
+
+client_t *client_init(client_t *client, server_t *serv)
+{
+    socklen_t len = sizeof(client->socket);
+
+    if (client == NULL)
+        return NULL;
+    memset(client, 0, sizeof(*client));
+    client->socket.fd = accept(
+        serv->socket.fd, (struct sockaddr *)&client->socket.sock_in, &len);
+    if (client->socket.fd == -1)
+        return NULL;
+    strcpy(client->path, serv->path);
+    client_write(client, MSG_220);
+    return client;
 }
 
 static bool client_wrote(client_t *client)

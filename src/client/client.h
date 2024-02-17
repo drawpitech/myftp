@@ -11,3 +11,4 @@
 
 void client_disconnect(client_t *client);
 void client_handle(client_t *client);
+client_t *client_init(client_t *client, server_t *serv);

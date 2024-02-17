@@ -12,7 +12,6 @@
 #include <unistd.h>
 
 #include "client/client.h"
-#include "messages/codes.h"
 #include "myftp.h"
 
 void handle_clients(server_t *serv)
@@ -31,21 +30,6 @@ void handle_clients(server_t *serv)
     }
 }
 
-static client_t *init_client(server_t *serv, client_t *client)
-{
-    socklen_t len = sizeof(client->socket);
-
-    if (client == NULL)
-        return NULL;
-    memset(client, 0, sizeof(*client));
-    client->socket.fd = accept(
-        serv->socket.fd, (struct sockaddr *)&client->socket.sock_in, &len);
-    if (client->socket.fd == -1)
-        return NULL;
-    client_write(client, MSG_220);
-    return client;
-}
-
 client_t *new_client(server_t *serv, client_t *client)
 {
     struct timeval tv = TV_CONNECT;
@@ -61,5 +45,5 @@ client_t *new_client(server_t *serv, client_t *client)
         return NULL;
     if (!FD_ISSET(sock, &fdread))
         return NULL;
-    return init_client(serv, client);
+    return client_init(client, serv);
 }
