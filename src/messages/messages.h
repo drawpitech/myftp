@@ -12,6 +12,7 @@
 #include "myftp.h"
 
 void client_process_message(client_t *client, char *buffer);
+bool client_logged(client_t *client);
 
 void msg_user(client_t *client, const char *buffer);
 void msg_pass(client_t *client, const char *buffer);
