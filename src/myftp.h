@@ -36,6 +36,7 @@ typedef struct {
 typedef struct {
     socket_t socket;
     char username[BUFSIZ];
+    char path[PATH_MAX];
     bool logged;
 } client_t;
 
