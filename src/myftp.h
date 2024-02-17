@@ -8,7 +8,9 @@
 #pragma once
 
 #include <arpa/inet.h>
+#include <linux/limits.h>
 #include <netinet/in.h>
+#include <stdbool.h>
 #include <stdio.h>
 
 #define LISTEN_BACKLOG 5
@@ -43,7 +45,7 @@ typedef struct {
         size_t alloc;
     } clients;
     socket_t socket;
-    const char *path;
+    char path[PATH_MAX];
 } server_t;
 
 int myftp(int argc, char **argv);
