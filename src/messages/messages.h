@@ -21,6 +21,8 @@ void msg_quit(client_t *client, const char *buffer);
 void msg_noop(client_t *client, const char *buffer);
 void msg_cwd(client_t *client, const char *buffer);
 void msg_cdup(client_t *client, const char *buffer);
+void msg_pwd(client_t *client, const char *buffer);
+void msg_xpwd(client_t *client, const char *buffer);
 
 static const struct msg_s {
     char *cmd;
@@ -29,8 +31,8 @@ static const struct msg_s {
     {"ACCT", NULL},
     {"USER", msg_user},
     {"PASS", msg_pass},
-    {"CWD ", NULL},
-    {"CDUP", NULL},
+    {"CWD", msg_cwd},
+    {"CDUP", msg_cdup},
     {"SMNT", NULL},
     {"QUIT", msg_quit},
     {"REIN", NULL},
@@ -49,9 +51,9 @@ static const struct msg_s {
     {"RNTO", NULL},
     {"ABOR", NULL},
     {"DELE", NULL},
-    {"RMD ", NULL},
-    {"MKD ", NULL},
-    {"PWD ", NULL},
+    {"RMD", NULL},
+    {"MKD", NULL},
+    {"PWD", msg_pwd},
     {"LIST", NULL},
     {"NLST", NULL},
     {"SITE", NULL},

@@ -8,6 +8,7 @@
 #pragma once
 
 static const char MSG_200[] = "200 Command okay.\r\n";
+static const char MSG_200_CD[] = "200 Working directory changed to %s\r\n";
 static const char MSG_500[] = "500 Syntax error, command unrecognized.\r\n";
 /* This may include errors such as command line too long. */
 static const char MSG_501[] =
@@ -66,7 +67,7 @@ static const char MSG_532[] = "532 Need account for storing files.\r\n";
 static const char MSG_150[] =
 "150 File status okay; about to open data connection.\r\n";
 static const char MSG_250[] = "250 Requested file action okay, completed.\r\n";
-static const char MSG_257[] = "257 %s created.\r\n";
+static const char MSG_257[] = "257 \"%s\" created.\r\n";
 static const char MSG_350[] =
 "350 Requested file action pending further information.\r\n";
 static const char MSG_450[] = "450 Requested file action not taken.\r\n";
