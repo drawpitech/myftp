@@ -46,7 +46,7 @@ void msg_cwd(client_t *client, const char *buffer)
         return;
     }
     strcpy(client->path, res);
-    client_write(client, MSG_200_CD, client->path);
+    client_write(client, MSG_257_CD, client->path);
 }
 
 void msg_cdup(client_t *client, UNUSED const char *buffer)
