@@ -35,7 +35,7 @@ void client_process_message(client_t *client, char *buffer)
     if (client == NULL || buffer == NULL)
         return;
     DEBUG("client said: %s", buffer);
-    for (size_t i = 0; INCOMMING_MSG[i].cmd != NULL; i++) {
+    for (size_t i = 0; i < LEN_OF(INCOMMING_MSG); i++) {
         msg = &INCOMMING_MSG[i];
         if (strncmp(buffer, msg->cmd, strlen(msg->cmd)) != 0)
             continue;

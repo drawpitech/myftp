@@ -19,6 +19,7 @@
 
 #define ATTR(x) __attribute__((x))
 #define UNUSED ATTR(unused)
+#define LEN_OF(x) (sizeof(x) / sizeof*(x))
 
 enum {
     RET_VALID = 0,

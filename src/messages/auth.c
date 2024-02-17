@@ -17,7 +17,6 @@ static const struct {
 } USERS[] = {
     {"Anonymous", ""},
     {"admin", "admin"},
-    {NULL, NULL},
 };
 
 void msg_user(client_t *client, const char *buffer)
@@ -25,7 +24,7 @@ void msg_user(client_t *client, const char *buffer)
     if (client == NULL || buffer == NULL)
         return;
     client->logged = false;
-    for (int i = 0; USERS[i].username != NULL; i++) {
+    for (size_t i = 0; i < LEN_OF(USERS); i++) {
         if (strcmp(USERS[i].username, buffer) != 0)
             continue;
         strcpy(client->username, buffer);
@@ -48,7 +47,7 @@ void msg_pass(client_t *client, const char *buffer)
         client_write(client, MSG_503);
         return;
     }
-    for (int i = 0; USERS[i].username != NULL; i++) {
+    for (size_t i = 0; i < LEN_OF(USERS); i++) {
         if (strcmp(USERS[i].username, client->username) != 0)
             continue;
         if (strcmp(USERS[i].password, buffer) != 0) {

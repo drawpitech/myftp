@@ -60,5 +60,4 @@ static const struct msg_s {
     {"HELP", NULL},
     {"NOOP", msg_noop},
     {"LPRT", NULL},
-    {NULL, NULL},
 };
