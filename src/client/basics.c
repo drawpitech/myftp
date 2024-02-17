@@ -9,11 +9,12 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "client.h"
-#include "../messages/messages.h"
 #include "debug.h"
+#include "messages/messages.h"
 #include "myftp.h"
 
 void client_disconnect(client_t *client)
@@ -21,10 +22,11 @@ void client_disconnect(client_t *client)
     if (client == NULL)
         return;
     close(client->socket.fd);
-    client->socket.fd = -1;
     DEBUG(
         "client disconnected: %s:%u\n", GETIP(*client),
         client->socket.sock_in.sin_port);
+    memset(client, 0, sizeof(*client));
+    client->socket.fd = -1;
 }
 
 static bool client_wrote(client_t *client)

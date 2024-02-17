@@ -19,6 +19,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+
 #include "debug.h"
 
 int ret_error(const char *name, int value)
@@ -57,6 +58,12 @@ static server_t *add_client(server_t *serv, client_t *client)
     if (serv == NULL)
         return NULL;
     arr = &serv->clients;
+    for (size_t i = 0; i < arr->size; i++) {
+        if (arr->arr[i].socket.fd == -1) {
+            arr->arr[i] = *client;
+            return serv;
+        }
+    }
     if (arr->size + 1 > arr->alloc) {
         arr->alloc = (arr->alloc) ? arr->alloc * arr->alloc : 2;
         arr->arr = reallocarray(arr->arr, arr->alloc, sizeof(*arr->arr));
