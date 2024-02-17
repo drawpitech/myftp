@@ -60,4 +60,8 @@ static const struct msg_s {
     {"HELP", NULL},
     {"NOOP", msg_noop},
     {"LPRT", NULL},
+    {"XMKD", NULL},
+    {"XRMD", NULL},
+    {"XPWD", msg_xpwd},
+    {"XCUP", NULL},
 };
