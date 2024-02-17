@@ -13,13 +13,10 @@
 
 #include "myftp.h"
 
-static void show_help(void)
-{
-    printf(
-        "USAGE: ./myftp port path\n"
-        "\tport is the port number on which the server socket listens\n"
-        "\tpath is the path to the home directory for the Anonymous user\n");
-}
+static const char HELP_MSG[] = {
+    "USAGE: %s port path\n"
+    "\tport is the port number on which the server socket listens\n"
+    "\tpath is the path to the home directory for the Anonymous user\n"};
 
 static int get_port(const char *str)
 {
@@ -52,7 +49,7 @@ void args_get(char **argv, int argc, server_t *serv)
     if (serv == NULL || argv == NULL || argc <= 0)
         exit(RET_ERROR);
     if (argc != 3) {
-        show_help();
+        printf(HELP_MSG, argv[0]);
         exit((argc != 2 || strcmp(argv[1], "-help") != 0) * RET_ERROR);
     }
     serv->socket.sock_in.sin_port = htons(get_port(argv[1]));

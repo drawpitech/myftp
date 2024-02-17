@@ -25,7 +25,7 @@
 
 int ret_error(const char *name, int value)
 {
-    dprintf(STDERR_FILENO, "myftp: ");
+    dprintf(STDERR_FILENO, "%s: ", __progname);
     perror(name);
     return value;
 }

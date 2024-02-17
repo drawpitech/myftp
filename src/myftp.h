@@ -21,6 +21,8 @@
 #define UNUSED ATTR(unused)
 #define LEN_OF(x) (sizeof(x) / sizeof*(x))
 
+extern const char *const __progname;
+
 enum {
     RET_VALID = 0,
     RET_ERROR = 84,
