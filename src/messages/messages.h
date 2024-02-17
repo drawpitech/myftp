@@ -17,6 +17,7 @@ void msg_user(client_t *client, const char *buffer);
 void msg_pass(client_t *client, const char *buffer);
 void msg_syst(client_t *client, const char *buffer);
 void msg_quit(client_t *client, const char *buffer);
+void msg_noop(client_t *client, const char *buffer);
 
 static const struct msg_s {
     char *cmd;
@@ -58,7 +59,7 @@ static const struct msg_s {
     {"SYST", msg_syst},
     {"STAT", NULL},
     {"HELP", NULL},
-    {"NOOP", NULL},
+    {"NOOP", msg_noop},
     {"LPRT", NULL},
     {NULL, NULL},
 };

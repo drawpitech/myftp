@@ -23,3 +23,10 @@ void msg_quit(client_t *client, UNUSED const char *buffer)
     client_write(client, MSG_221);
     client_disconnect(client);
 }
+
+void msg_noop(client_t *client, UNUSED const char *buffer)
+{
+    if (client == NULL)
+        return;
+    client_write(client, MSG_200);
+}
