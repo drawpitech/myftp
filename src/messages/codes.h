@@ -55,7 +55,7 @@ static const char MSG_226[] = "226 Closing data connection.\r\n";
 /* transfer or file abort). */
 static const char MSG_426[] = "426 Connection closed; transfer aborted.\r\n";
 static const char MSG_227[] =
-"227 Entering Passive Mode (%ld,%ld,%ld,%ld,%ld,%ld).\r\n";
+"227 Entering Passive Mode (%d,%d,%d,%d,%d,%d).\r\n";
 
 static const char MSG_230[] = "230 User logged in, proceed.\r\n";
 static const char MSG_530[] = "530 Not logged in.\r\n";

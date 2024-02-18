@@ -9,6 +9,7 @@
 
 #include "codes.h"
 #include "messages.h"
+#include "client/client.h"
 
 // Great security here
 static const struct {

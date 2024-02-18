@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 
 #include "messages.h"
+#include "client/client.h"
 #include "messages/codes.h"
 #include "myftp.h"
 

@@ -63,20 +63,51 @@ static bool client_wrote(client_t *client)
     return FD_ISSET(client->socket.fd, &fdread);
 }
 
-int client_write(client_t *client, const char *fmt, ...)
+static int client_wr(client_t *client, int fd, const char *fmt, va_list args)
 {
-    va_list args1;
-    va_list args2;
+    va_list args_copy;
     int ret = 0;
 
     if (client == NULL || fmt == NULL)
         return 0;
-    va_start(args1, fmt);
-    va_copy(args2, args1);
-    ret = vdprintf(client->socket.fd, fmt, args1);
-    DEBUG_DO(vprintf(fmt, args2));
-    va_end(args1);
-    va_end(args2);
+    va_copy(args_copy, args);
+    DEBUG_DO(vprintf(fmt, args_copy));
+    ret = vdprintf(fd, fmt, args);
+    va_end(args_copy);
+    return ret;
+}
+
+int client_data_write(client_t *client, const char *fmt, ...)
+{
+    va_list args;
+    int ret = 0;
+    int fd = -1;
+
+    if (client == NULL)
+        return 0;
+    va_start(args, fmt);
+    switch (client->state) {
+        case NO_DATA_SOCK:
+            DEBUG_MSG("no data socket\n");
+            break;
+        case PASSIVE_MODE:
+            fd = client->data_socket.fd;
+            break;
+    }
+    DEBUG("data socket: %d\n", fd);
+    ret = client_wr(client, fd, fmt, args);
+    va_end(args);
+    return ret;
+}
+
+int client_write(client_t *client, const char *fmt, ...)
+{
+    va_list args;
+    int ret = 0;
+
+    va_start(args, fmt);
+    ret = client_wr(client, client->socket.fd, fmt, args);
+    va_end(args);
     return ret;
 }
 

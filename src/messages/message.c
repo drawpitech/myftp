@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "debug.h"
+#include "client/client.h"
 #include "messages.h"
 #include "messages/codes.h"
 
