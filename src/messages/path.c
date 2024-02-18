@@ -12,21 +12,6 @@
 #include "messages/codes.h"
 #include "myftp.h"
 
-static char *get_path(
-    const char *parent, const char *child, char result[PATH_MAX])
-{
-    if (parent == NULL || child == NULL || result == NULL)
-        return NULL;
-    if (child[0] == '/') {
-        strcpy(result, child);
-    } else {
-        strcpy(result, parent);
-        strcat(result, "/");
-        strcat(result, child);
-    }
-    return result;
-}
-
 void msg_cwd(client_t *client, const char *buffer)
 {
     struct stat path_stat;
@@ -58,7 +43,7 @@ void msg_pwd(client_t *client, UNUSED const char *buffer)
 {
     if (client == NULL || !client_logged(client))
         return;
-    client_write(client, MSG_257, client->path);
+    client_write(client, MSG_257_CD, client->path);
 }
 
 void msg_xpwd(client_t *client, UNUSED const char *buffer)

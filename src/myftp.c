@@ -23,11 +23,20 @@
 #include "client/client.h"
 #include "debug.h"
 
-int ret_error(const char *name, int value)
+static void handle_clients(server_t *serv)
 {
-    dprintf(STDERR_FILENO, "%s: ", __progname);
-    perror(name);
-    return value;
+    client_t *client = NULL;
+    struct clients_s *arr = NULL;
+
+    if (serv == NULL)
+        return;
+    arr = &serv->clients;
+    for (size_t i = 0; i < arr->size; i++) {
+        client = &arr->arr[i];
+        if (client->socket.fd == -1)
+            continue;
+        client_handle(client);
+    }
 }
 
 static int open_serv(server_t *serv)
@@ -83,6 +92,24 @@ static void close_server(server_t *serv)
             client_disconnect(&serv->clients.arr[i]);
     close(serv->socket.fd);
     free(serv->clients.arr);
+}
+
+static client_t *new_client(server_t *serv, client_t *client)
+{
+    struct timeval tv = TV_CONNECT;
+    fd_set fdread;
+    fd_set fdwrite;
+    int sock = serv->socket.fd;
+
+    FD_ZERO(&fdread);
+    FD_ZERO(&fdwrite);
+    FD_SET(sock, &fdread);
+    FD_SET(sock, &fdwrite);
+    if (select(sock + 1, &fdread, &fdwrite, NULL, &tv) <= 0)
+        return NULL;
+    if (!FD_ISSET(sock, &fdread))
+        return NULL;
+    return client_init(client, serv);
 }
 
 int myftp(int argc, char **argv)

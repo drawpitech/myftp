@@ -55,7 +55,6 @@ typedef struct {
 
 int myftp(int argc, char **argv);
 int ret_error(const char *name, int value);
-client_t *new_client(server_t *serv, client_t *client);
-void handle_clients(server_t *serv);
 int client_write(client_t *client, const char *fmt, ...);
 void args_get(char **argv, int argc, server_t *serv);
+char *get_path(const char *parent, const char *child, char result[PATH_MAX]);
