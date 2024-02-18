@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** myftp
 ** File description:
-** misc
+** dirs
 */
 
 #include <sys/stat.h>
@@ -27,4 +27,18 @@ void msg_mkd(client_t *client, const char *buffer)
         return;
     }
     client_write(client, MSG_257, buffer);
+}
+
+void msg_rmd(client_t *client, const char *buffer)
+{
+    char dir_path[PATH_MAX] = {0};
+
+    if (client == NULL || buffer == NULL || !client_logged(client))
+        return;
+    if (get_path(client->path, buffer, dir_path) == NULL ||
+        rmdir(dir_path) == -1) {
+        client_write(client, MSG_550);
+        return;
+    }
+    client_write(client, MSG_250);
 }
