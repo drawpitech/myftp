@@ -29,7 +29,7 @@ static const char MSG_110[] = "110 Restart marker reply.\r\n";
 static const char MSG_211[] = "211 System status, or system help reply.\r\n";
 static const char MSG_212[] = "212 Directory status.\r\n";
 static const char MSG_213[] = "213 File status.\r\n";
-static const char MSG_214[] = "214 Help message.\r\n";
+static const char MSG_214[] = "214 %s.\r\n";
 /* On how to use the server or the meaning of a particular */
 /* non-standard command.  This reply is useful only to the */
 /* human user. */
