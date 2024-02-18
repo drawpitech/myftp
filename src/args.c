@@ -32,6 +32,23 @@ static int get_port(const char *str)
     return port;
 }
 
+static void set_path(const char *str, server_t *serv)
+{
+    struct stat path_stat;
+    char buf[PATH_MAX] = {0};
+
+    if (get_path(".", str, buf) == NULL) {
+        errno = ENOENT;
+        exit(ret_error("get_path", RET_ERROR));
+    }
+    if (realpath(buf, serv->path) == NULL)
+        exit(ret_error("realpath", RET_ERROR));
+    if (lstat(serv->path, &path_stat) != 0 || !S_ISDIR(path_stat.st_mode)) {
+        errno = ENOTDIR;
+        exit(ret_error("lstat", RET_ERROR));
+    }
+}
+
 void args_get(char **argv, int argc, server_t *serv)
 {
     if (serv == NULL || argv == NULL || argc <= 0)
@@ -41,8 +58,5 @@ void args_get(char **argv, int argc, server_t *serv)
         exit((argc != 2 || strcmp(argv[1], "-help") != 0) * RET_ERROR);
     }
     serv->socket.sock_in.sin_port = htons(get_port(argv[1]));
-    if (get_path(".", argv[2], serv->path) == NULL) {
-        errno = ENOENT;
-        exit(ret_error("get_path", RET_ERROR));
-    }
+    set_path(argv[2], serv);
 }
