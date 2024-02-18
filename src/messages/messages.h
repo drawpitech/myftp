@@ -21,6 +21,7 @@ void msg_help(client_t *client, const char *buffer);
 void msg_mkd(client_t *client, const char *buffer);
 void msg_noop(client_t *client, const char *buffer);
 void msg_pass(client_t *client, const char *buffer);
+void msg_pasv(client_t *client, const char *buffer);
 void msg_pwd(client_t *client, const char *buffer);
 void msg_quit(client_t *client, const char *buffer);
 void msg_rmd(client_t *client, const char *buffer);
@@ -43,12 +44,13 @@ static const struct msg_s {
     {"HELP", msg_help, "List available commands"},
     {"LIST", NULL, "List files in the current working directory"},
     {"LPRT", NULL, NULL},
+    {"LPSV", NULL, NULL},
     {"MKD", msg_mkd, "Make directory"},
     {"MODE", NULL, NULL},
     {"NLST", NULL, NULL},
     {"NOOP", msg_noop, "Do nothing"},
     {"PASS", msg_pass, "Specify password for authentication"},
-    {"PASV", NULL, "Enable \"passive\" mode for data transfer"},
+    {"PASV", msg_pasv, "Enable \"passive\" mode for data transfer"},
     {"PORT", NULL, "Enable \"active\" mode for data transfer"},
     {"PWD", msg_pwd, "Print working directory"},
     {"QUIT", msg_quit, "Disconnection"},

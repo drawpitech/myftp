@@ -41,7 +41,13 @@ typedef struct {
     char username[BUFSIZ];
     char path[PATH_MAX];
     bool logged;
+    enum {
+        NO_DATA_SOCK = 0,
+        PASSIVE_MODE = 1,
+    } state;
+    socket_t data_socket;
 } client_t;
+
 
 typedef struct {
     struct clients_s {
