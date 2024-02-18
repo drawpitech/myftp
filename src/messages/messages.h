@@ -18,6 +18,7 @@ void msg_cdup(client_t *client, const char *buffer);
 void msg_cwd(client_t *client, const char *buffer);
 void msg_dele(client_t *client, const char *buffer);
 void msg_help(client_t *client, const char *buffer);
+void msg_list(client_t *client, const char *buffer);
 void msg_mkd(client_t *client, const char *buffer);
 void msg_noop(client_t *client, const char *buffer);
 void msg_pass(client_t *client, const char *buffer);
@@ -42,7 +43,7 @@ static const struct msg_s {
     {"CWD", msg_cwd, "Change working directory"},
     {"DELE", msg_dele, "Delete file on the server"},
     {"HELP", msg_help, "List available commands"},
-    {"LIST", NULL, "List files in the current working directory"},
+    {"LIST", msg_list, "List files in the current working directory"},
     {"LPRT", NULL, NULL},
     {"LPSV", NULL, NULL},
     {"MKD", msg_mkd, "Make directory"},
