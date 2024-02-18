@@ -24,6 +24,7 @@ void msg_cdup(client_t *client, const char *buffer);
 void msg_pwd(client_t *client, const char *buffer);
 void msg_xpwd(client_t *client, const char *buffer);
 void msg_help(client_t *client, const char *buffer);
+void msg_mkd(client_t *client, const char *buffer);
 
 static const struct msg_s {
     char *cmd;
@@ -54,7 +55,7 @@ static const struct msg_s {
     {"ABOR", NULL, NULL},
     {"DELE", NULL, "Delete file on the server"},
     {"RMD", NULL, NULL},
-    {"MKD", NULL, NULL},
+    {"MKD", msg_mkd, NULL},
     {"PWD", msg_pwd, "Print working directory"},
     {"LIST", NULL, "List files in the current working directory"},
     {"NLST", NULL, NULL},
