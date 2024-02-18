@@ -26,6 +26,7 @@ void msg_xpwd(client_t *client, const char *buffer);
 void msg_help(client_t *client, const char *buffer);
 void msg_mkd(client_t *client, const char *buffer);
 void msg_rmd(client_t *client, const char *buffer);
+void msg_dele(client_t *client, const char *buffer);
 
 static const struct msg_s {
     char *cmd;
@@ -54,7 +55,7 @@ static const struct msg_s {
     {"RNFR", NULL, NULL},
     {"RNTO", NULL, NULL},
     {"ABOR", NULL, NULL},
-    {"DELE", NULL, "Delete file on the server"},
+    {"DELE", msg_dele, "Delete file on the server"},
     {"RMD", msg_rmd, "Remove directory"},
     {"MKD", msg_mkd, "Make directory"},
     {"PWD", msg_pwd, "Print working directory"},
