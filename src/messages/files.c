@@ -34,19 +34,19 @@ void msg_dele(client_t *client, const char *buffer)
 
 static void list_files(client_t *client, int fd)
 {
-    DIR *dir = NULL;
+    static char buf[BUFSIZ];
+    FILE *ls = popen("ls -l", "r");
 
-    dir = opendir(client->path);
-    if (dir == NULL) {
+    if (ls == NULL) {
         client_write(client, MSG_450);
         return;
     }
     client_write(client, MSG_150);
-    for (struct dirent *file = readdir(dir); file != NULL; file = readdir(dir))
-        if (file->d_name[0] != '.')
-            client_fd_write(fd, client, "%s\r\n", file->d_name);
+    memset(buf, 0, BUFSIZ);
+    for (; fgets(buf, BUFSIZ, ls) != NULL; memset(buf, 0, BUFSIZ))
+        client_fd_write(fd, client, buf, BUFSIZ);
     client_write(client, MSG_226);
-    closedir(dir);
+    pclose(ls);
 }
 
 void msg_list(client_t *client, UNUSED const char *buffer)
@@ -79,7 +79,7 @@ static void retrieve_file(client_t *client, const char *filename, int fd)
     client_write(client, MSG_150);
     while (size == BUFSIZ) {
         size = read(file, buff, BUFSIZ);
-        client_fd_write(fd, client, "%.*s", (int)size, buff);
+        client_fd_write(fd, client, buff, size);
     }
     client_write(client, MSG_226);
     close(file);
