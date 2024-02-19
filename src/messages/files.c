@@ -31,16 +31,11 @@ void msg_dele(client_t *client, const char *buffer)
     client_write(client, MSG_250);
 }
 
-static void list_files(client_t *client, const char *path)
+static void list_files(client_t *client, int fd)
 {
     DIR *dir = NULL;
-    int fd = client_get_data_sock(client);
 
-    if (fd == -1) {
-        client_write(client, MSG_425);
-        return;
-    }
-    dir = opendir(path);
+    dir = opendir(client->path);
     if (dir == NULL) {
         client_write(client, MSG_450);
         return;
@@ -50,14 +45,21 @@ static void list_files(client_t *client, const char *path)
         if (file->d_name[0] != '.')
             client_fd_write(fd, client, "%s\r\n", file->d_name);
     client_write(client, MSG_226);
-    client_close_data_sock(client);
     closedir(dir);
     close(fd);
 }
 
 void msg_list(client_t *client, const char *buffer)
 {
+    int fd = 0;
+
     if (client == NULL || buffer == NULL || !client_logged(client))
         return;
-    list_files(client, client->path);
+    fd = client_get_data_sock(client);
+    if (fd == -1) {
+        client_write(client, MSG_425);
+        return;
+    }
+    list_files(client, fd);
+    client_close_data_sock(client);
 }
