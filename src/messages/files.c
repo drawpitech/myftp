@@ -13,6 +13,7 @@
 
 #include "client/client.h"
 #include "debug.h"
+#include "fcntl.h"
 #include "messages.h"
 #include "messages/codes.h"
 #include "myftp.h"
@@ -40,16 +41,51 @@ static void list_files(client_t *client, int fd)
         client_write(client, MSG_450);
         return;
     }
-    client_write(client, MSG_125);
+    client_write(client, MSG_150);
     for (struct dirent *file = readdir(dir); file != NULL; file = readdir(dir))
         if (file->d_name[0] != '.')
             client_fd_write(fd, client, "%s\r\n", file->d_name);
     client_write(client, MSG_226);
     closedir(dir);
-    close(fd);
 }
 
-void msg_list(client_t *client, const char *buffer)
+void msg_list(client_t *client, UNUSED const char *buffer)
+{
+    int fd = 0;
+
+    if (client == NULL || !client_logged(client))
+        return;
+    fd = client_get_data_sock(client);
+    if (fd == -1) {
+        client_write(client, MSG_425);
+        return;
+    }
+    list_files(client, fd);
+    close(fd);
+    client_close_data_sock(client);
+}
+
+static void retrieve_file(client_t *client, const char *filename, int fd)
+{
+    ssize_t size = BUFSIZ;
+    char buff[BUFSIZ + 1] = {0};
+    int file = 0;
+
+    file = open(filename, O_RDONLY);
+    if (file == -1) {
+        client_write(client, MSG_450);
+        return;
+    }
+    client_write(client, MSG_150);
+    while (size == BUFSIZ) {
+        size = read(file, buff, BUFSIZ);
+        client_fd_write(fd, client, "%.*s", (int)size, buff);
+    }
+    client_write(client, MSG_226);
+    close(file);
+}
+
+void msg_retr(client_t *client, const char *buffer)
 {
     int fd = 0;
 
@@ -60,6 +96,8 @@ void msg_list(client_t *client, const char *buffer)
         client_write(client, MSG_425);
         return;
     }
-    list_files(client, fd);
+    printf("buffer: %s\n", buffer);
+    retrieve_file(client, buffer, fd);
+    close(fd);
     client_close_data_sock(client);
 }

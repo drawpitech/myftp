@@ -25,7 +25,9 @@ void msg_pass(client_t *client, const char *buffer);
 void msg_pasv(client_t *client, const char *buffer);
 void msg_pwd(client_t *client, const char *buffer);
 void msg_quit(client_t *client, const char *buffer);
+void msg_retr(client_t *client, const char *buffer);
 void msg_rmd(client_t *client, const char *buffer);
+void msg_type(client_t *client, const char *buffer);
 void msg_syst(client_t *client, const char *buffer);
 void msg_user(client_t *client, const char *buffer);
 void msg_xpwd(client_t *client, const char *buffer);
@@ -57,7 +59,7 @@ static const struct msg_s {
     {"QUIT", msg_quit, "Disconnection"},
     {"REIN", NULL, NULL},
     {"REST", NULL, NULL},
-    {"RETR", NULL, "Download file from server to client"},
+    {"RETR", msg_retr, "Download file from server to client"},
     {"RMD", msg_rmd, "Remove directory"},
     {"RNFR", NULL, NULL},
     {"RNTO", NULL, NULL},
@@ -68,7 +70,7 @@ static const struct msg_s {
     {"STOU", NULL, NULL},
     {"STRU", NULL, NULL},
     {"SYST", msg_syst, "Print system information"},
-    {"TYPE", NULL, NULL},
+    {"TYPE", msg_type, NULL},
     {"USER", msg_user, "Specify user for authentication"},
     {"XCUP", NULL, NULL},
     {"XMKD", NULL, NULL},

@@ -36,7 +36,7 @@ static unsigned short get_port(client_t *client)
     client->data_socket.fd = socket(AF_INET, SOCK_STREAM, 0);
     if (client->data_socket.fd == -1)
         return 0;
-    for (unsigned short i = MIN_PORT; i != MIN_PORT + 3; i++)
+    for (unsigned short i = MIN_PORT; i != MAX_PORT; i++)
         if (try_port(client, i))
             return i;
     close(client->data_socket.fd);
