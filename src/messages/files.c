@@ -34,34 +34,30 @@ void msg_dele(client_t *client, const char *buffer)
 static void list_files(client_t *client, const char *path)
 {
     DIR *dir = NULL;
+    int fd = client_get_data_sock(client);
 
+    if (fd == -1) {
+        client_write(client, MSG_425);
+        return;
+    }
     dir = opendir(path);
     if (dir == NULL) {
         client_write(client, MSG_450);
         return;
     }
     client_write(client, MSG_125);
-    client_write(client, MSG_150);
     for (struct dirent *file = readdir(dir); file != NULL; file = readdir(dir))
         if (file->d_name[0] != '.')
-            client_data_write(client, "%s\r\n", file->d_name);
-    client_write(client, MSG_250);
-    DEBUG("fd: %d\n", client->data_socket.fd);
+            client_fd_write(fd, client, "%s\r\n", file->d_name);
+    client_write(client, MSG_226);
+    client_close_data_sock(client);
     closedir(dir);
-    close(client->data_socket.fd);
-    memset(&client->data_socket, 0, sizeof(client->data_socket));
-    client->state = NO_DATA_SOCK;
+    close(fd);
 }
 
 void msg_list(client_t *client, const char *buffer)
 {
-    char path[PATH_MAX] = {0};
-
     if (client == NULL || buffer == NULL || !client_logged(client))
         return;
-    if (get_path(client->path, buffer, path) == NULL) {
-        client_write(client, MSG_450);
-        return;
-    }
-    list_files(client, path);
+    list_files(client, client->path);
 }

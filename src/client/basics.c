@@ -77,24 +77,15 @@ static int client_wr(client_t *client, int fd, const char *fmt, va_list args)
     return ret;
 }
 
-int client_data_write(client_t *client, const char *fmt, ...)
+int client_fd_write(int fd, client_t *client, const char *fmt, ...)
 {
     va_list args;
     int ret = 0;
-    int fd = -1;
 
     if (client == NULL)
         return 0;
     va_start(args, fmt);
-    switch (client->state) {
-        case NO_DATA_SOCK:
-            DEBUG_MSG("no data socket\n");
-            break;
-        case PASSIVE_MODE:
-            fd = client->data_socket.fd;
-            break;
-    }
-    DEBUG("data socket: %d\n", fd);
+    DEBUG("data socket: %d", fd);
     ret = client_wr(client, fd, fmt, args);
     va_end(args);
     return ret;
