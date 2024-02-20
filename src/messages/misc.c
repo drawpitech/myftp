@@ -49,10 +49,3 @@ void msg_help(client_t *client, UNUSED const char *buffer)
     }
     client_write(client, MSG_500);
 }
-
-void msg_type(client_t *client, UNUSED const char *buffer)
-{
-    if (client == NULL)
-        return;
-    client_write(client, MSG_200);
-}
