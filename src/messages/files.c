@@ -48,10 +48,8 @@ static void list_files(client_t *client, int fd, const char *path)
     }
     client_write(client, MSG_150);
     memset(buf, 0, BUFSIZ);
-    for (; fgets(buf, BUFSIZ, ls) != NULL; memset(buf, 0, BUFSIZ)) {
+    for (; fgets(buf, BUFSIZ, ls) != NULL; memset(buf, 0, BUFSIZ))
         client_fd_write(fd, client, buf, BUFSIZ);
-        write(1, buf, BUFSIZ);
-    }
     client_write(client, MSG_226);
     pclose(ls);
 }
@@ -64,14 +62,14 @@ void msg_list(client_t *client, const char *buffer)
 
     if (client == NULL || !client_logged(client))
         return;
-    fd = client_get_data_sock(client);
-    if (fd == -1) {
-        client_write(client, MSG_425);
-        return;
-    }
     if (get_path(client->path, buffer, path) == NULL ||
         lstat(path, &path_stat) != 0 || !S_ISDIR(path_stat.st_mode)) {
         client_write(client, MSG_450);
+        return;
+    }
+    fd = client_get_data_sock(client);
+    if (fd == -1) {
+        client_write(client, MSG_425);
         return;
     }
     list_files(client, fd, path);
@@ -81,18 +79,16 @@ void msg_list(client_t *client, const char *buffer)
 
 static void retrieve_file(client_t *client, const char *filename, int fd)
 {
-    ssize_t size = BUFSIZ;
-    char buff[BUFSIZ + 1] = {0};
-    int file = 0;
+    static char buff[BUFSIZ];
+    int file = open(filename, O_RDONLY);
 
-    file = open(filename, O_RDONLY);
     if (file == -1) {
         client_write(client, MSG_450);
         return;
     }
     client_write(client, MSG_150);
-    while (size == BUFSIZ) {
-        size = read(file, buff, BUFSIZ);
+    for (ssize_t size = sizeof(buff); size == sizeof(buff);) {
+        size = read(file, buff, sizeof(buff));
         client_fd_write(fd, client, buff, size);
     }
     client_write(client, MSG_226);
@@ -101,17 +97,21 @@ static void retrieve_file(client_t *client, const char *filename, int fd)
 
 void msg_retr(client_t *client, const char *buffer)
 {
+    static char path[PATH_MAX];
     int fd = 0;
 
     if (client == NULL || buffer == NULL || !client_logged(client))
         return;
+    if (get_path(client->path, buffer, path) == NULL) {
+        client_write(client, MSG_450);
+        return;
+    }
     fd = client_get_data_sock(client);
     if (fd == -1) {
         client_write(client, MSG_425);
         return;
     }
-    printf("buffer: %s\n", buffer);
-    retrieve_file(client, buffer, fd);
+    retrieve_file(client, path, fd);
     close(fd);
     client_close_data_sock(client);
 }
