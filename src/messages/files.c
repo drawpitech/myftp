@@ -32,26 +32,35 @@ void msg_dele(client_t *client, const char *buffer)
     client_write(client, MSG_250);
 }
 
-static void list_files(client_t *client, int fd)
+static void list_files(client_t *client, int fd, const char *path)
 {
+    static const char cmd[] = "ls -l ";
+    static char ls_cmd[PATH_MAX + LEN_OF(cmd)];
+    FILE *ls = NULL;
     static char buf[BUFSIZ];
-    FILE *ls = popen("ls -l", "r");
 
+    strcpy(ls_cmd, cmd);
+    strcat(ls_cmd, path);
+    ls = popen(ls_cmd, "r");
     if (ls == NULL) {
         client_write(client, MSG_450);
         return;
     }
     client_write(client, MSG_150);
     memset(buf, 0, BUFSIZ);
-    for (; fgets(buf, BUFSIZ, ls) != NULL; memset(buf, 0, BUFSIZ))
+    for (; fgets(buf, BUFSIZ, ls) != NULL; memset(buf, 0, BUFSIZ)) {
         client_fd_write(fd, client, buf, BUFSIZ);
+        write(1, buf, BUFSIZ);
+    }
     client_write(client, MSG_226);
     pclose(ls);
 }
 
-void msg_list(client_t *client, UNUSED const char *buffer)
+void msg_list(client_t *client, const char *buffer)
 {
     int fd = 0;
+    static char path[PATH_MAX];
+    struct stat path_stat;
 
     if (client == NULL || !client_logged(client))
         return;
@@ -60,7 +69,12 @@ void msg_list(client_t *client, UNUSED const char *buffer)
         client_write(client, MSG_425);
         return;
     }
-    list_files(client, fd);
+    if (get_path(client->path, buffer, path) == NULL ||
+        lstat(path, &path_stat) != 0 || !S_ISDIR(path_stat.st_mode)) {
+        client_write(client, MSG_450);
+        return;
+    }
+    list_files(client, fd, path);
     close(fd);
     client_close_data_sock(client);
 }
