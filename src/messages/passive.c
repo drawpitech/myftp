@@ -45,8 +45,9 @@ static unsigned short get_port(client_t *client)
 
 void msg_pasv(client_t *client, UNUSED const char *buffer)
 {
-    const int bits = 256;
     unsigned short port = 0;
+    unsigned int raw_ip = 0;
+    char *ip = (char *)&raw_ip;
 
     if (client == NULL || !client_logged(client))
         return;
@@ -58,5 +59,7 @@ void msg_pasv(client_t *client, UNUSED const char *buffer)
     }
     DEBUG("passive mode: port: %d\n", port);
     client->state = PASSIVE_MODE;
-    client_write(client, MSG_227, 127, 0, 0, 1, port / bits, port % bits);
+    raw_ip = htonl(client->socket.sock_in.sin_addr.s_addr);
+    client_write(
+        client, MSG_227, ip[3], ip[2], ip[1], ip[0], port >> 8, port & 256);
 }

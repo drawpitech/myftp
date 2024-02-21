@@ -16,14 +16,6 @@
 #include "debug.h"
 #include "myftp.h"
 
-static int data_ascii(int fd, const char *str, size_t size)
-{
-    int ret = dprintf(fd, "%.*s", (int)size, str);
-
-    fsync(fd);
-    return ret;
-}
-
 int client_fd_write(int fd, client_t *client, const char *str, size_t size)
 {
     if (client == NULL || str == NULL || client->state == NO_DATA_SOCK)
@@ -33,7 +25,7 @@ int client_fd_write(int fd, client_t *client, const char *str, size_t size)
         (client->state == PASSIVE_MODE) ? "passive" : "active", size);
     switch (client->data_type) {
         case DT_ASCII:
-            return data_ascii(fd, str, size);
+            return dprintf(fd, "%.*s", (int)size, str);
         case DT_IMAGE:
         case DT_LOCAL:
         case DT_FORMAT_CONTROL:
