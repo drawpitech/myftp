@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "debug.h"
 #include "client/client.h"
+#include "debug.h"
 #include "messages.h"
 #include "messages/codes.h"
 
@@ -29,6 +29,13 @@ static char *clear_msg(const struct msg_s *msg, char *buffer)
     return buffer;
 }
 
+static int compare(const char *buffer, const struct msg_s *msg)
+{
+    return (buffer == NULL || msg == NULL || msg->cmd == NULL)
+        ? 1
+        : strncmp(buffer, msg->cmd, strlen(msg->cmd));
+}
+
 void client_process_message(client_t *client, char *buffer)
 {
     const struct msg_s *msg = NULL;
@@ -36,15 +43,16 @@ void client_process_message(client_t *client, char *buffer)
     if (client == NULL || buffer == NULL)
         return;
     DEBUG("client said: %s", buffer);
-    for (size_t i = 0; i < LEN_OF(INCOMMING_MSG); i++) {
-        msg = &INCOMMING_MSG[i];
-        if (strncmp(buffer, msg->cmd, strlen(msg->cmd)) != 0)
-            continue;
-        if (msg->func != NULL)
-            msg->func(client, clear_msg(msg, buffer));
-        else
-            client_write(client, MSG_502);
+    msg = bsearch(
+        buffer, INCOMMING_MSG, LEN_OF(INCOMMING_MSG), sizeof(*INCOMMING_MSG),
+        (int (*)(const void *, const void *))compare);
+    if (msg == NULL) {
+        client_write(client, MSG_500);
         return;
     }
-    client_write(client, MSG_500);
+    if (msg->func == NULL) {
+        client_write(client, MSG_502);
+        return;
+    }
+    msg->func(client, clear_msg(msg, buffer));
 }

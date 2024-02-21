@@ -27,8 +27,8 @@ void msg_pwd(client_t *client, const char *buffer);
 void msg_quit(client_t *client, const char *buffer);
 void msg_retr(client_t *client, const char *buffer);
 void msg_rmd(client_t *client, const char *buffer);
-void msg_type(client_t *client, const char *buffer);
 void msg_syst(client_t *client, const char *buffer);
+void msg_type(client_t *client, const char *buffer);
 void msg_user(client_t *client, const char *buffer);
 void msg_xpwd(client_t *client, const char *buffer);
 
