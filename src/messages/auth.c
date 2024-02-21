@@ -25,19 +25,8 @@ void msg_user(client_t *client, const char *buffer)
     if (client == NULL || buffer == NULL)
         return;
     client->logged = false;
-    for (size_t i = 0; i < LEN_OF(USERS); i++) {
-        if (strcmp(USERS[i].username, buffer) != 0)
-            continue;
-        strcpy(client->username, buffer);
-        if (strcmp(USERS[i].password, "") != 0) {
-            client_write(client, MSG_331);
-            return;
-        }
-        client->logged = true;
-        client_write(client, MSG_230);
-        return;
-    }
-    client_write(client, MSG_530);
+    strcpy(client->username, buffer);
+    client_write(client, MSG_331);
 }
 
 void msg_pass(client_t *client, const char *buffer)
@@ -52,10 +41,8 @@ void msg_pass(client_t *client, const char *buffer)
     for (size_t i = 0; i < LEN_OF(USERS); i++) {
         if (strcmp(USERS[i].username, client->username) != 0)
             continue;
-        if (strcmp(USERS[i].password, buffer) != 0) {
-            client_write(client, MSG_530);
-            return;
-        }
+        if (strcmp(USERS[i].password, buffer) != 0)
+            break;
         client->logged = true;
         client_write(client, MSG_230);
         return;
