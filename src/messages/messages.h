@@ -23,6 +23,7 @@ void msg_mkd(client_t *client, const char *buffer);
 void msg_noop(client_t *client, const char *buffer);
 void msg_pass(client_t *client, const char *buffer);
 void msg_pasv(client_t *client, const char *buffer);
+void msg_port(client_t *client, const char *buffer);
 void msg_pwd(client_t *client, const char *buffer);
 void msg_quit(client_t *client, const char *buffer);
 void msg_retr(client_t *client, const char *buffer);
@@ -54,7 +55,7 @@ static const struct msg_s {
     {"NOOP", msg_noop, "Do nothing"},
     {"PASS", msg_pass, "Specify password for authentication"},
     {"PASV", msg_pasv, "Enable \"passive\" mode for data transfer"},
-    {"PORT", NULL, "Enable \"active\" mode for data transfer"},
+    {"PORT", msg_port, "Enable \"active\" mode for data transfer"},
     {"PWD", msg_pwd, "Print working directory"},
     {"QUIT", msg_quit, "Disconnection"},
     {"REIN", NULL, NULL},
@@ -70,7 +71,7 @@ static const struct msg_s {
     {"STOU", NULL, NULL},
     {"STRU", NULL, NULL},
     {"SYST", msg_syst, "Print system information"},
-    {"TYPE", msg_type, NULL},
+    {"TYPE", msg_type, "Set transfer type"},
     {"USER", msg_user, "Specify user for authentication"},
     {"XCUP", NULL, NULL},
     {"XMKD", NULL, NULL},

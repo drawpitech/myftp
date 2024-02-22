@@ -51,8 +51,9 @@ typedef struct {
     char path[PATH_MAX];
     bool logged;
     enum {
-        NO_DATA_SOCK = 0,
-        PASSIVE_MODE = 1,
+        NO_DATA_SOCK,
+        PASSIVE_MODE,
+        ACTIVE_MODE,
     } state;
     data_type_t data_type;
     socket_t data_socket;
