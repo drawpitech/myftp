@@ -35,6 +35,7 @@ void msg_syst(client_t *client, const char *buffer);
 void msg_type(client_t *client, const char *buffer);
 void msg_user(client_t *client, const char *buffer);
 void msg_xpwd(client_t *client, const char *buffer);
+void msg_stor(client_t *client, const char *buffer);
 
 static const struct msg_s {
     char *cmd;
@@ -70,7 +71,7 @@ static const struct msg_s {
     {"SITE", NULL, NULL},
     {"SMNT", NULL, NULL},
     {"STAT", NULL, NULL},
-    {"STOR", NULL, "Upload file from client to server"},
+    {"STOR", msg_stor, "Upload file from client to server"},
     {"STOU", NULL, NULL},
     {"STRU", NULL, NULL},
     {"SYST", msg_syst, "Print system information"},
