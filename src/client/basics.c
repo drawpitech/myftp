@@ -38,6 +38,8 @@ client_t *client_init(client_t *client, server_t *serv)
     memset(client, 0, sizeof(*client));
     client->socket.fd = accept(
         serv->socket.fd, (struct sockaddr *)&client->socket.sock_in, &len);
+    client->state = NO_DATA_SOCK;
+    client->data_type = DT_ASCII;
     if (client->socket.fd == -1)
         return NULL;
     strcpy(client->path, serv->path);
