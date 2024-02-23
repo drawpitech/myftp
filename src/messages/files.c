@@ -32,7 +32,7 @@ void msg_dele(client_t *client, const char *buffer)
     client_write(client, MSG_250);
 }
 
-static void list_files(client_t *client, int fd, const char *path)
+static void list_files(int fd, client_t *client, const char *path)
 {
     static const char cmd[] = "ls -l ";
     static char ls_cmd[PATH_MAX + LEN_OF(cmd)];
@@ -56,7 +56,6 @@ static void list_files(client_t *client, int fd, const char *path)
 
 void msg_list(client_t *client, const char *buffer)
 {
-    int fd = 0;
     static char path[PATH_MAX];
     struct stat path_stat;
 
@@ -67,17 +66,10 @@ void msg_list(client_t *client, const char *buffer)
         client_write(client, MSG_450);
         return;
     }
-    fd = client_get_data_sock(client);
-    if (fd == -1) {
-        client_write(client, MSG_425);
-        return;
-    }
-    list_files(client, fd, path);
-    close(fd);
-    client_close_data_sock(client);
+    fork_data_sock(client, buffer, list_files);
 }
 
-static void retrieve_file(client_t *client, const char *filename, int fd)
+static void retrieve_file(int fd, client_t *client, const char *filename)
 {
     static char buff[BUFSIZ];
     int file = open(filename, O_RDONLY);
@@ -98,7 +90,6 @@ static void retrieve_file(client_t *client, const char *filename, int fd)
 void msg_retr(client_t *client, const char *buffer)
 {
     static char path[PATH_MAX];
-    int fd = 0;
 
     if (client == NULL || buffer == NULL || !client_logged(client))
         return;
@@ -106,12 +97,5 @@ void msg_retr(client_t *client, const char *buffer)
         client_write(client, MSG_450);
         return;
     }
-    fd = client_get_data_sock(client);
-    if (fd == -1) {
-        client_write(client, MSG_425);
-        return;
-    }
-    retrieve_file(client, path, fd);
-    close(fd);
-    client_close_data_sock(client);
+    fork_data_sock(client, buffer, retrieve_file);
 }

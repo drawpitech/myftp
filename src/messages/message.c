@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "client/client.h"
 #include "debug.h"
@@ -34,6 +35,28 @@ static int compare(const char *buffer, const struct msg_s *msg)
     return (buffer == NULL || msg == NULL || msg->cmd == NULL)
         ? 1
         : strncmp(buffer, msg->cmd, strlen(msg->cmd));
+}
+
+void fork_data_sock(
+    client_t *client, const char *buffer,
+    void (*func)(int, client_t *, const char *))
+{
+    int fd = 0;
+
+    if (client == NULL || buffer == NULL || func == NULL)
+        return;
+    if (client->state == NO_DATA_SOCK) {
+        client_write(client, MSG_425);
+        return;
+    }
+    fd = client_get_data_sock(client);
+    if (fd == -1) {
+        client_write(client, MSG_425);
+        return;
+    }
+    func(fd, client, buffer);
+    close(fd);
+    client_close_data_sock(client);
 }
 
 void client_process_message(client_t *client, char *buffer)

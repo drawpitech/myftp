@@ -13,6 +13,9 @@
 
 void client_process_message(client_t *client, char *buffer);
 bool client_logged(client_t *client);
+void fork_data_sock(
+    client_t *client, const char *buffer,
+    void (*func)(int, client_t *, const char *));
 
 void msg_cdup(client_t *client, const char *buffer);
 void msg_cwd(client_t *client, const char *buffer);
