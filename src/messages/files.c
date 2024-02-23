@@ -66,7 +66,7 @@ void msg_list(client_t *client, const char *buffer)
         client_write(client, MSG_450);
         return;
     }
-    fork_data_sock(client, buffer, list_files);
+    fork_data_sock(client, path, list_files);
 }
 
 static void retrieve_file(int fd, client_t *client, const char *filename)
@@ -97,5 +97,5 @@ void msg_retr(client_t *client, const char *buffer)
         client_write(client, MSG_450);
         return;
     }
-    fork_data_sock(client, buffer, retrieve_file);
+    fork_data_sock(client, path, retrieve_file);
 }
