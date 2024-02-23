@@ -61,5 +61,6 @@ void msg_pasv(client_t *client, UNUSED const char *buffer)
     client->state = PASSIVE_MODE;
     raw_ip = htonl(client->socket.sock_in.sin_addr.s_addr);
     client_write(
-        client, MSG_227, ip[3], ip[2], ip[1], ip[0], port >> 8, port & 256);
+        client, MSG_227, ip[3], ip[2], ip[1], ip[0], port >> 8,
+        port - (port >> 8 << 8));
 }
