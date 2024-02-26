@@ -99,3 +99,34 @@ void msg_retr(client_t *client, const char *buffer)
     }
     fork_data_sock(client, path, retrieve_file);
 }
+
+static void upload_file(int fd, client_t *client, const char *filename)
+{
+    static char buff[BUFSIZ];
+    int file = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0666);
+
+    if (file == -1) {
+        client_write(client, MSG_450);
+        return;
+    }
+    client_write(client, MSG_150);
+    for (ssize_t size = sizeof(buff); size == sizeof(buff);) {
+        size = read(fd, buff, sizeof(buff));
+        write(file, buff, size);
+    }
+    client_write(client, MSG_226);
+    close(file);
+}
+
+void msg_stor(client_t *client, const char *buffer)
+{
+    static char path[PATH_MAX];
+
+    if (client == NULL || buffer == NULL || !client_logged(client))
+        return;
+    if (get_path(client->path, buffer, path) == NULL) {
+        client_write(client, MSG_450);
+        return;
+    }
+    fork_data_sock(client, buffer, upload_file);
+}
