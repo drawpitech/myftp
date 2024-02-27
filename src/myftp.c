@@ -18,6 +18,7 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include "client/client.h"
@@ -122,11 +123,12 @@ int myftp(int argc, char **argv)
         return RET_ERROR;
     DEBUG("server online.., fd: %d", serv.socket.fd);
     for (client_t client; true;) {
+        if (new_client(&serv, &client) != NULL) {
+            add_client(&serv, &client);
+            DEBUG("new: %s:%u", GETIP(client), client.socket.sock_in.sin_port);
+        }
         handle_clients(&serv);
-        if (new_client(&serv, &client) == NULL)
-            continue;
-        add_client(&serv, &client);
-        DEBUG("new: %s:%u", GETIP(client), client.socket.sock_in.sin_port);
+        waitpid(-1, NULL, WNOHANG);
     }
     close_server(&serv);
     return RET_VALID;
