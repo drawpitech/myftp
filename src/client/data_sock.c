@@ -40,9 +40,14 @@ static int get_active_mode(client_t *client)
     sock->fd = socket(AF_INET, SOCK_STREAM, 0);
     if (sock->fd == -1)
         return -1;
+    if (connect(
+            sock->fd, (struct sockaddr *)&sock->sock_in,
+            sizeof(sock->sock_in)) == -1) {
+        close(sock->fd);
+        return -1;
+    }
     DEBUG("data socket: %d", sock->fd);
-    return connect(
-        sock->fd, (struct sockaddr *)&sock->sock_in, sizeof(sock->sock_in));
+    return sock->fd;
 }
 
 int client_get_data_sock(client_t *client)

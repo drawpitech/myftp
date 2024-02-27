@@ -35,20 +35,22 @@ static bool parse_port(const char *buffer, size_t size, char *arr[size])
 
 static bool set_sock_addr(client_t *client, const char *buff)
 {
-    char *arr[6] = {0};
+    const size_t IPV4_SIZE = 6;
+    char *arr[IPV4_SIZE];
+    struct sockaddr_in *sock = &client->data_socket.sock_in;
 
+    memset(arr, 0, sizeof(arr));
     if (!parse_port(buff, LEN_OF(arr), arr))
         return false;
-    client->data_socket.sock_in.sin_family = AF_INET;
+    sock->sin_family = AF_INET;
     errno = 0;
-    client->data_socket.sock_in.sin_addr.s_addr = ntohl(
+    sock->sin_addr.s_addr = htonl(
         (atoi(arr[0]) << 24) | (atoi(arr[1]) << 16) | (atoi(arr[2]) << 8) |
         atoi(arr[3]));
-    client->data_socket.sock_in.sin_port =
-        ntohs(atoi(arr[4]) << 8 | atoi(arr[5]));
+    sock->sin_port = htons((atoi(arr[4]) << 8) | atoi(arr[5]));
     DEBUG(
         "active mode: %d.%d.%d.%d: port: %d\n", atoi(arr[0]), atoi(arr[1]),
-        atoi(arr[2]), atoi(arr[3]), client->data_socket.sock_in.sin_port);
+        atoi(arr[2]), atoi(arr[3]), sock->sin_port);
     return (errno == 0);
 }
 

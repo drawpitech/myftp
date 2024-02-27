@@ -21,8 +21,9 @@ int client_fd_write(int fd, client_t *client, const char *str, size_t size)
     if (client == NULL || str == NULL || client->state == NO_DATA_SOCK)
         return 0;
     DEBUG(
-        "writing data in %s mode: %lu bytes",
-        (client->state == PASSIVE_MODE) ? "passive" : "active", size);
+        "[fd: %d] writing data in %s mode (type %d): %lu bytes", fd,
+        (client->state == PASSIVE_MODE) ? "passive" : "active",
+        client->data_type, size);
     switch (client->data_type) {
         case DT_ASCII:
             DEBUG("%.*s", (int)size, str);
