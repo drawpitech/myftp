@@ -38,11 +38,10 @@ typedef struct {
 } socket_t;
 
 typedef enum {
-    DT_FORMAT_CONTROL = 1,
-    DT_ASCII = 1 << 1,
-    DT_EBCDIC = 2 << 1,
-    DT_IMAGE = 3 << 1,
-    DT_LOCAL = 4 << 1,
+    DT_ASCII,
+    DT_EBCDIC,
+    DT_IMAGE,
+    DT_LOCAL,
 } data_type_t;
 
 typedef struct {

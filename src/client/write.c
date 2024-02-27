@@ -25,17 +25,13 @@ int client_fd_write(int fd, client_t *client, const char *str, size_t size)
         (client->state == PASSIVE_MODE) ? "passive" : "active", size);
     switch (client->data_type) {
         case DT_ASCII:
-            DEBUG("%.*s\n", (int)size, str);
+            DEBUG("%.*s", (int)size, str);
             return dprintf(fd, "%.*s", (int)size, str);
         case DT_IMAGE:
         case DT_LOCAL:
-        case DT_FORMAT_CONTROL:
         case DT_EBCDIC:
             DEBUG_DO(write(STDOUT_FILENO, str, size));
             return (int)write(fd, str, size);
-        default:
-            DEBUG("unknown data type: %d", client->data_type);
-            break;
     }
     return 0;
 }
