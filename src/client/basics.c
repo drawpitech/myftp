@@ -50,15 +50,12 @@ client_t *client_init(client_t *client, server_t *serv)
 static bool client_wrote(client_t *client)
 {
     fd_set fdread;
-    fd_set fdwrite;
     struct timeval tv = TV_READ;
 
     if (client == NULL)
         return false;
     FD_ZERO(&fdread);
-    FD_ZERO(&fdwrite);
     FD_SET(client->socket.fd, &fdread);
-    FD_SET(client->socket.fd, &fdwrite);
     if (select(client->socket.fd + 1, &fdread, NULL, NULL, &tv) <= 0)
         return false;
     return FD_ISSET(client->socket.fd, &fdread);
