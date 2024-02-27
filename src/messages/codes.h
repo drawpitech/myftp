@@ -67,7 +67,7 @@ static const char MSG_150[] =
 "150 File status okay; about to open data connection.\r\n";
 static const char MSG_250[] = "250 Requested file action okay, completed.\r\n";
 static const char MSG_257[] = "257 \"%s\" created.\r\n";
-static const char MSG_257_CD[] = "257 %s\r\n";
+static const char MSG_257_CD[] = "257 \"%s\"\r\n";
 static const char MSG_350[] =
 "350 Requested file action pending further information.\r\n";
 static const char MSG_450[] = "450 Requested file action not taken.\r\n";
