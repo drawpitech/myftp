@@ -108,8 +108,6 @@ static client_t *new_client(server_t *serv, client_t *client)
     FD_SET(sock, &fdwrite);
     if (select(sock + 1, &fdread, &fdwrite, NULL, &tv) <= 0)
         return NULL;
-    if (!FD_ISSET(sock, &fdread))
-        return NULL;
     return client_init(client, serv);
 }
 

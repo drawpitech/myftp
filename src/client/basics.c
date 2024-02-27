@@ -47,26 +47,18 @@ client_t *client_init(client_t *client, server_t *serv)
     return client;
 }
 
-static bool client_wrote(client_t *client)
-{
-    fd_set fdread;
-    struct timeval tv = TV_READ;
-
-    if (client == NULL)
-        return false;
-    FD_ZERO(&fdread);
-    FD_SET(client->socket.fd, &fdread);
-    if (select(client->socket.fd + 1, &fdread, NULL, NULL, &tv) <= 0)
-        return false;
-    return FD_ISSET(client->socket.fd, &fdread);
-}
-
 void client_handle(client_t *client)
 {
     static char buffer[BUFSIZ + 1];
     ssize_t size = 0;
+    fd_set fdread;
+    struct timeval tv = TV_READ;
 
-    if (client == NULL || !client_wrote(client))
+    if (client == NULL)
+        return;
+    FD_ZERO(&fdread);
+    FD_SET(client->socket.fd, &fdread);
+    if (select(client->socket.fd + 1, &fdread, NULL, NULL, &tv) <= 0)
         return;
     size = read(client->socket.fd, buffer, BUFSIZ);
     if (size == 0 || size == -1) {
