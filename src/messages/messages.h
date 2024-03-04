@@ -32,7 +32,6 @@ void msg_quit(client_t *client, const char *buffer);
 void msg_retr(client_t *client, const char *buffer);
 void msg_rmd(client_t *client, const char *buffer);
 void msg_syst(client_t *client, const char *buffer);
-void msg_type(client_t *client, const char *buffer);
 void msg_user(client_t *client, const char *buffer);
 void msg_xpwd(client_t *client, const char *buffer);
 void msg_stor(client_t *client, const char *buffer);
@@ -75,7 +74,7 @@ static const struct msg_s {
     {"STOU", NULL, NULL},
     {"STRU", NULL, NULL},
     {"SYST", msg_syst, "Print system information"},
-    {"TYPE", msg_type, "Set transfer type"},
+    {"TYPE", NULL, "Set transfer type"},
     {"USER", msg_user, "Specify user for authentication"},
     {"XCUP", NULL, NULL},
     {"XMKD", NULL, NULL},

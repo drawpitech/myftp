@@ -37,13 +37,6 @@ typedef struct {
     struct sockaddr_in sock_in;
 } socket_t;
 
-typedef enum {
-    DT_ASCII,
-    DT_EBCDIC,
-    DT_IMAGE,
-    DT_LOCAL,
-} data_type_t;
-
 typedef struct {
     socket_t socket;
     char username[BUFSIZ];
@@ -54,7 +47,6 @@ typedef struct {
         PASSIVE_MODE,
         ACTIVE_MODE,
     } state;
-    data_type_t data_type;
     socket_t data_socket;
 } client_t;
 
