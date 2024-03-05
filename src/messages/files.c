@@ -49,7 +49,7 @@ static void list_files(int fd, client_t *client, const char *path)
     client_write(client, MSG_150);
     memset(buf, 0, BUFSIZ);
     for (; fgets(buf, BUFSIZ, ls) != NULL; memset(buf, 0, BUFSIZ))
-        client_fd_write(fd, client, buf, BUFSIZ);
+        client_fd_write(fd, client, buf, strlen(buf));
     client_write(client, MSG_226);
     pclose(ls);
 }
