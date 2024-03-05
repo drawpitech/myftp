@@ -26,7 +26,7 @@ void msg_dele(client_t *client, const char *buffer)
         return;
     if (get_path(client->path, buffer, file_path) == NULL ||
         unlink(file_path) == -1) {
-        client_write(client, MSG_450);
+        client_write(client, MSG_550);
         return;
     }
     client_write(client, MSG_250);
