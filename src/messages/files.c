@@ -35,9 +35,9 @@ void msg_dele(client_t *client, const char *buffer)
 static void list_files(int fd, client_t *client, const char *path)
 {
     static const char cmd[] = "ls -l ";
-    static char ls_cmd[PATH_MAX + LEN_OF(cmd)];
+    char ls_cmd[PATH_MAX + LEN_OF(cmd)];
     FILE *ls = NULL;
-    static char buf[BUFSIZ];
+    char buf[BUFSIZ];
 
     strcpy(ls_cmd, cmd);
     strcat(ls_cmd, path);
@@ -56,7 +56,7 @@ static void list_files(int fd, client_t *client, const char *path)
 
 void msg_list(client_t *client, const char *buffer)
 {
-    static char path[PATH_MAX];
+    char path[PATH_MAX];
     struct stat path_stat;
 
     if (client == NULL || !client_logged(client))
@@ -71,7 +71,7 @@ void msg_list(client_t *client, const char *buffer)
 
 static void retrieve_file(int fd, client_t *client, const char *filename)
 {
-    static char buff[BUFSIZ];
+    char buff[BUFSIZ];
     int file = open(filename, O_RDONLY);
 
     if (file == -1) {
@@ -89,7 +89,7 @@ static void retrieve_file(int fd, client_t *client, const char *filename)
 
 void msg_retr(client_t *client, const char *buffer)
 {
-    static char path[PATH_MAX];
+    char path[PATH_MAX];
 
     if (client == NULL || buffer == NULL || !client_logged(client))
         return;
@@ -102,7 +102,7 @@ void msg_retr(client_t *client, const char *buffer)
 
 static void upload_file(int fd, client_t *client, const char *filename)
 {
-    static char buff[BUFSIZ];
+    char buff[BUFSIZ];
     int file = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0666);
 
     if (file == -1) {
@@ -120,7 +120,7 @@ static void upload_file(int fd, client_t *client, const char *filename)
 
 void msg_stor(client_t *client, const char *buffer)
 {
-    static char path[PATH_MAX];
+    char path[PATH_MAX];
 
     if (client == NULL || buffer == NULL || !client_logged(client))
         return;

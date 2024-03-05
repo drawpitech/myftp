@@ -48,7 +48,7 @@ client_t *client_init(client_t *client, server_t *serv)
 
 void client_handle(client_t *client)
 {
-    static char buffer[BUFSIZ + 1];
+    char buffer[BUFSIZ + 1];
     ssize_t size = 0;
     fd_set fdread;
     struct timeval tv = TV_READ;

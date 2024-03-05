@@ -16,7 +16,7 @@
 
 static bool parse_port(const char *buffer, size_t size, char *arr[size])
 {
-    static char tmp[BUFSIZ];
+    char tmp[BUFSIZ];
     char *ptr = tmp;
 
     if (buffer == NULL || arr == NULL)
