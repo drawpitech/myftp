@@ -18,7 +18,7 @@
 
 static int get_passive_mode(client_t *client)
 {
-    struct timeval tv = TV_CONNECT;
+    struct timeval tv = { .tv_sec = 10, .tv_usec = 0 };
     fd_set fdread;
     fd_set fdwrite;
     socket_t *sock = &client->data_socket;
