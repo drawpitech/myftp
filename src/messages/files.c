@@ -103,7 +103,7 @@ void msg_retr(client_t *client, const char *buffer)
 static void upload_file(int fd, client_t *client, const char *filename)
 {
     char buff[BUFSIZ];
-    int file = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0666);
+    int file = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 
     if (file == -1) {
         client_write(client, MSG_450);
@@ -111,7 +111,7 @@ static void upload_file(int fd, client_t *client, const char *filename)
     }
     client_write(client, MSG_150);
     for (ssize_t size = sizeof(buff); size == sizeof(buff);) {
-        size = read(fd, buff, sizeof(buff));
+        size = read(fd, buff, size);
         write(file, buff, size);
     }
     client_write(client, MSG_226);
