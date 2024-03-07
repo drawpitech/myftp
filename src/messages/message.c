@@ -25,7 +25,9 @@ static char *clear_msg(const struct msg_s *msg, char *buffer)
     if (buffer[0] == ' ')
         buffer += 1;
     len = strlen(buffer);
-    if (len >= 2 && strcmp(buffer + len - 2, "\r\n") == 0)
+    if (len >= 1 && strcmp(buffer + len - 1, "\n") == 0)
+        buffer[len - 1] = '\0';
+    else if (len >= 2 && strcmp(buffer + len - 2, "\r\n") == 0)
         buffer[len - 2] = '\0';
     return buffer;
 }
