@@ -146,5 +146,5 @@ void msg_stor(client_t *client, const char *buffer)
         client_write(client, MSG_450);
         return;
     }
-    fork_data_sock(client, buffer, upload_file);
+    fork_data_sock(client, path, upload_file);
 }
