@@ -22,7 +22,7 @@ void msg_cwd(client_t *client, const char *buffer)
     if (client == NULL || buffer == NULL || !client_logged(client))
         return;
     if (strcmp(buffer, "") == 0) {
-        client_write(client, MSG_501);
+        client_write(client, MSG_550);
         return;
     }
     get_path(client->path, buffer, path);
