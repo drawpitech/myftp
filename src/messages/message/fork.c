@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** myftp
 ** File description:
-** message
+** fork
 */
 
 #include <stdbool.h>
