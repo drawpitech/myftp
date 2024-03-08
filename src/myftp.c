@@ -78,6 +78,8 @@ static server_t *add_client(server_t *serv, client_t *client)
     if (arr->size + 1 > arr->alloc) {
         arr->alloc = (arr->alloc) ? arr->alloc * arr->alloc : 2;
         arr->arr = reallocarray(arr->arr, arr->alloc, sizeof(*arr->arr));
+        if (arr->arr == NULL)
+            exit(RET_ERROR);
     }
     arr->arr[arr->size] = *client;
     arr->size += 1;
