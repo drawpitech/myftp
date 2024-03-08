@@ -100,9 +100,28 @@ void msg_retr(client_t *client, const char *buffer)
     fork_data_sock(client, path, retrieve_file);
 }
 
-static void upload_file(int fd, client_t *client, const char *filename)
+static void give_me_da_file(int file, int fd)
 {
     char buff[BUFSIZ];
+    struct timeval tv = {0};
+    fd_set readfds;
+
+    for (ssize_t size = LEN_OF(buff); size > 0;) {
+        tv = (struct timeval){.tv_sec = 10, .tv_usec = 0};
+        FD_ZERO(&readfds);
+        FD_SET(fd, &readfds);
+        if (select(fd + 1, &readfds, NULL, NULL, &tv) <= 0) {
+            DEBUG_MSG("Envie de crever");
+            break;
+        }
+        size = read(fd, buff, size);
+        write(file, buff, size);
+        DEBUG("size: %ld", size);
+    }
+}
+
+static void upload_file(int fd, client_t *client, const char *filename)
+{
     int file = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 
     if (file == -1) {
@@ -110,10 +129,7 @@ static void upload_file(int fd, client_t *client, const char *filename)
         return;
     }
     client_write(client, MSG_150);
-    for (ssize_t size = sizeof(buff); size == sizeof(buff);) {
-        size = read(fd, buff, size);
-        write(file, buff, size);
-    }
+    give_me_da_file(file, fd);
     client_write(client, MSG_226);
     close(file);
 }
