@@ -11,6 +11,7 @@
 
 #include "myftp.h"
 
+struct msg_s *get_message(const char *cmd);
 void client_process_message(client_t *client, char *buffer);
 bool client_logged(client_t *client);
 void fork_data_sock(

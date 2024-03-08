@@ -34,13 +34,6 @@ static char *clear_msg(const struct msg_s *msg, char *buffer)
     return buffer;
 }
 
-static int compare(const char *buffer, const struct msg_s *msg)
-{
-    return (buffer == NULL || msg == NULL || msg->cmd == NULL)
-        ? 1
-        : strncmp(buffer, msg->cmd, strlen(msg->cmd));
-}
-
 static void data_fork_child(
     client_t *client, const char *buffer,
     void (*func)(int, client_t *, const char *))
@@ -79,6 +72,20 @@ void fork_data_sock(
     }
 }
 
+static int compare(const char *buffer, const struct msg_s *msg)
+{
+    return (buffer == NULL || msg == NULL || msg->cmd == NULL)
+        ? 1
+        : strncmp(buffer, msg->cmd, strlen(msg->cmd));
+}
+
+struct msg_s *get_message(const char *cmd)
+{
+    return bsearch(
+        cmd, INCOMMING_MSG, LEN_OF(INCOMMING_MSG), sizeof(*INCOMMING_MSG),
+        (int (*)(const void *, const void *))compare);
+}
+
 void client_process_message(client_t *client, char *buffer)
 {
     const struct msg_s *msg = NULL;
@@ -86,9 +93,7 @@ void client_process_message(client_t *client, char *buffer)
     if (client == NULL || buffer == NULL)
         return;
     DEBUG("client said: %s", buffer);
-    msg = bsearch(
-        buffer, INCOMMING_MSG, LEN_OF(INCOMMING_MSG), sizeof(*INCOMMING_MSG),
-        (int (*)(const void *, const void *))compare);
+    msg = get_message(buffer);
     if (msg == NULL) {
         client_write(client, MSG_500);
         return;

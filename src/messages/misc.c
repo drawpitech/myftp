@@ -33,19 +33,31 @@ void msg_noop(client_t *client, UNUSED const char *buffer)
     client_write(client, MSG_200);
 }
 
-void msg_help(client_t *client, UNUSED const char *buffer)
+static const char *desc(const struct msg_s *msg)
+{
+    static char buf[BUFSIZ];
+
+    if (msg == NULL || msg->help == NULL)
+        return "No description available";
+    strcpy(buf, msg->cmd);
+    strcat(buf, " - ");
+    strcat(buf, msg->help);
+    return buf;
+}
+
+void msg_help(client_t *client, const char *buffer)
 {
     const struct msg_s *msg = NULL;
 
     if (client == NULL)
         return;
-    for (size_t i = 0; i < LEN_OF(INCOMMING_MSG); i++) {
-        msg = &INCOMMING_MSG[i];
-        if (strcmp(buffer, msg->cmd) != 0)
-            continue;
-        client_write(
-            client, MSG_214, (msg->help != NULL) ? msg->help : "(null)");
+    if (buffer[0] != '\0') {
+        client_write(client, MSG_214, desc(get_message(buffer)));
         return;
     }
-    client_write(client, MSG_500);
+    for (size_t i = 0; i < LEN_OF(INCOMMING_MSG); i++) {
+        msg = &INCOMMING_MSG[i];
+        if (msg->func != NULL)
+            client_write(client, MSG_214, desc(msg));
+    }
 }
