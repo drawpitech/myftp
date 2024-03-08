@@ -48,6 +48,7 @@ typedef struct {
         ACTIVE_MODE,
     } state;
     socket_t data_socket;
+    char buffer[BUFSIZ];
 } client_t;
 
 
