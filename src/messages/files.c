@@ -21,11 +21,13 @@
 void msg_dele(client_t *client, const char *buffer)
 {
     char file_path[PATH_MAX] = {0};
+    char res[PATH_MAX] = {0};
 
     if (client == NULL || buffer == NULL || !client_logged(client))
         return;
     if (get_path(client->path, buffer, file_path) == NULL ||
-        unlink(file_path) == -1) {
+        realpath(file_path, res) == NULL || access(res, F_OK) != 0 ||
+        remove(res) != 0) {
         client_write(client, MSG_550);
         return;
     }
