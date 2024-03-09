@@ -77,7 +77,7 @@ static void retrieve_file(int fd, client_t *client, const char *filename)
     int file = open(filename, O_RDONLY);
 
     if (file == -1) {
-        client_write(client, MSG_450);
+        client_write(client, MSG_550);
         return;
     }
     client_write(client, MSG_150);
@@ -96,7 +96,7 @@ void msg_retr(client_t *client, const char *buffer)
     if (client == NULL || buffer == NULL || !client_logged(client))
         return;
     if (get_path(client->path, buffer, path) == NULL) {
-        client_write(client, MSG_450);
+        client_write(client, MSG_550);
         return;
     }
     fork_data_sock(client, path, retrieve_file);
